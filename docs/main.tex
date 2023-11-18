@@ -1,0 +1,93 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsfonts}
+\usepackage{amsmath}
+
+\title{Projeto de Programação Não Linear}
+\author{Vinicius Barcellos\\Samuel Kutz \\Marcelo Baptista \\Matheus Morishita}
+\date{}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        \textbf{Projeto de Programação Não Linear}
+            
+        \vspace{0.5cm}
+        \LARGE
+        Support Vector Machine (SVM)
+            
+        \vspace{0.8cm}
+        \textbf{Alunos:}\\
+        Vinicius Barcellos\\Samuel Kutz\\Matheus Morishita\\Marcelo Baptista
+            
+        \vfill
+        2º Semestre de 2023\\ 
+        \vfill
+        \includegraphics[width=0.3\textwidth]{ufpr_1000.jpg}
+            
+            
+    \end{center}
+\end{titlepage}
+
+\section{Introdução}
+No contexto de Machine Learning, modelos podem ser usados para dois tipos de problemas, \textit{Regressão} ou \textit{Classificação}. Em nosso trabalho, estaremos lidando com um modelo de Classificação, as \textbf{Máquinas de Vetores de Suporte} (SVM, do inglês \textit{Support Vector Machine}).
+
+A idéia por trás desse modelo é dividir um conjunto de dados em dois grupos que o modelo considerar distintos. 
+
+Vale ressaltar que esse modelo é de aprendizado não supervisionado, o que basicamente significa que o modelo vai tentar resolver o problema sózinho, e não sabemos se o que ele gerou esta certo ou não.
+
+
+\section{O problema}
+O meio pelo qual \textbf{SVM} tenta atingir o objetivo de classificar os dados é encontrando um \textit{Hyperplano} que vai estar entre os dados de uma forma que, dados "acima" do hyperplano pertencem a um grupo enqunato que dados "abaixo" pertencem a outro.
+
+O problema surge do fato de que poderiamos ter infinítos hyperplanos entre os dados que poderiam dividi-los, ou seja, precisamos tentar encontrar o hyperplano ótimo, que melhor divide os dados.
+
+\subsection{Fundamentação Teórica}
+\paragraph{HyperPlano} \hspace{0pt} \\
+
+Em um \textit{n-espaço} o \textit{hyperplano} será um subespaço plano afim de dimensão \(n-1\). Ou seja, em duas dimensões, o \textit{hyperplano} seria um subespaço unidimensional plano afim, ou seja, uma reta, para 3 dimensões, um plano, e assim por diante.
+
+Ou seja, para \(n\) dimensões, poderiamos definir o plano como:
+
+\[w_0+w_1X_1+w_2X_2+\cdots+w_nX_n=0\]
+
+Onde \(w_i\) são os pesos, ou os coeficientes angulares do hyperplano.
+Também podemos chamar \(w_0\) de \(b\), sendo esse o viés do hyperplano.
+Portanto podemos definir o hyperplano por:
+\[b+w_1X_1+w_2X_2+\cdots+w_nX_n=0\]
+Na forma vetorial:
+\[w^TX+b=0\]
+
+\paragraph{Vetores de Suporte} \hspace{0pt} \\
+
+Vetores de Suporte são os pontos mais pertos da superfície de decisão (\textit{hyperplano}). Esses pontos são os elementos críticos dos nossos dados.
+
+Vetores de suporte são aqueles pontos que mudariam a posição do hyperplano quando removidos.
+Portanto pontos que estão mais longe do que os vetores de suporte não são considerados durante o processo de otimização, caso esse fosse o caso, estariamos fazendo uma \textit{Regressão Linear}.
+
+denotaremos esses pontos por \(v\in\mathbb{R}^{n}\)
+
+\subsection{Modelagem Matemática}
+Para encontrar o melhor hyperplano que divide os dados, precisamos encontrar os pesos \(w\) e viézes \(b\) de tal forma que a margem entre os hiperplanos (\(w\cdot x+b=1\)) e (\(w\cdot x+b = -1\)) seja maximizada.
+
+Isso significa maximizar \(\frac{2}{\|w\|}\) 
+
+\subsection{Escolha de Algorítimo}
+
+\section{Experimentos Numéricos}
+\subsection{O algorítimo Implementado}
+\subsection{Resultados Obtidos}
+
+\section{Conclusões}
+%\begin{equation}
+%\begin{aligned}
+%\min_{w,b,\xi} \quad & \frac{1}{2}w^{t}w+C\sum_{i=1}^{N}{\xi_{i}}\\
+%\textrm{s.t.} \quad & y_{i}(w\phi(x_{i}+b))+\xi_{i}-1\\
+%  &\xi\geq0    \\
+%\end{aligned}
+%\end{equation}
+\end{document}
