@@ -42,39 +42,75 @@ Vale ressaltar que esse modelo é de aprendizado não supervisionado, o que basi
 
 
 \section{O problema}
-O meio pelo qual \textbf{SVM} tenta atingir o objetivo de classificar os dados é encontrando um \textit{Hyperplano} que vai estar entre os dados de uma forma que, dados "acima" do hyperplano pertencem a um grupo enqunato que dados "abaixo" pertencem a outro.
+O meio pelo qual \textbf{SVM} tenta atingir o objetivo de classificar os dados é encontrando um \textit{Hyperplano} que vai estar entre os dados de uma forma que, dados "acima" do hyperplano pertencem a um grupo enqunato que dados "abaixo" pertencem a outro, ou seja, teremos uma resposta binária, i.e. \(y_i\in\{-1,1\}\).
 
 O problema surge do fato de que poderiamos ter infinítos hyperplanos entre os dados que poderiam dividi-los, ou seja, precisamos tentar encontrar o hyperplano ótimo, que melhor divide os dados.
 
 \subsection{Fundamentação Teórica}
-\paragraph{HyperPlano} \hspace{0pt} \\
+Support Vector Machine (\textit{SVM}) é um modelo de classificação.
+O objetivo do modelo é encontrar um \textit{hiperplano} que passa entre os pontos de um dataset, de maneira a separa-los, para isso o método utiliza-se de modelos de otimização para encontrar o "melhor" hiperplano possível, i.e. o \textit{hiperplano ótimo}. 
 
-Em um \textit{n-espaço} o \textit{hyperplano} será um subespaço plano afim de dimensão \(n-1\). Ou seja, em duas dimensões, o \textit{hyperplano} seria um subespaço unidimensional plano afim, ou seja, uma reta, para 3 dimensões, um plano, e assim por diante.
+Os pontos mais importantes são aqueles mais próximos do hiperplano, portanto, todos os pontos que não estão pertos não são levados em conta. Esses pontos que são levados em consideração são chamados \textit{Vetores de Suporte}, pois apenas eles que ajudam na busca pelo hiperplano ótimo.
 
-Ou seja, para \(n\) dimensões, poderiamos definir o plano como:
+Os tipos de pontos que estaremos lidando em nossos problemas serão do tipo:
+\[\Omega =\{(x_i,y_i)\subset\mathbb{R}^{p}\times\{-1,1\};i=1,2,\cdots,n\}\]
 
-\[w_0+w_1X_1+w_2X_2+\cdots+w_nX_n=0\]
+Ou seja, como teremos apenas dois grupos, \(y_i\) pode apenas pertencer a \(\{-1,1\}\).
 
-Onde \(w_i\) são os pesos, ou os coeficientes angulares do hyperplano.
-Também podemos chamar \(w_0\) de \(b\), sendo esse o viés do hyperplano.
-Portanto podemos definir o hyperplano por:
-\[b+w_1X_1+w_2X_2+\cdots+w_nX_n=0\]
-Na forma vetorial:
-\[w^TX+b=0\]
+\paragraph{Hiperplano} \hspace{0pt}\\
 
-\paragraph{Vetores de Suporte} \hspace{0pt} \\
+Para o \(\mathbb{R}^2\) uma reta pode ser escrito como:
+\[y=ax+b\rightarrow ax+by=c\]
 
-Vetores de Suporte são os pontos mais pertos da superfície de decisão (\textit{hyperplano}). Esses pontos são os elementos críticos dos nossos dados.
+Para o \(\mathbb{R}^3\) teriamos um plano, que pode ser escrito da forma:
+\[ax+by+cz=d\]
 
-Vetores de suporte são aqueles pontos que mudariam a posição do hyperplano quando removidos.
-Portanto pontos que estão mais longe do que os vetores de suporte não são considerados durante o processo de otimização, caso esse fosse o caso, estariamos fazendo uma \textit{Regressão Linear}.
+Para generalizar para \(n\) dimensões poderiamos escrever um hiperplano da forma:
+\[w_0+w_1x_1+w_2x_2+\cdots+w_nx_n=0\]
 
-denotaremos esses pontos por \(v\in\mathbb{R}^{n}\)
+Chamando \(w_0=b\) teriamos:
+\[w_1x_1+w_2x_2+\cdots+w_nx_n+b=0\]
+
+que também pode ser escrito da forma vetorial como:
+\[w^Tx+b=0\equiv <w,x>+b=0\]
+
+onde \(w,x\in\mathbb{R}^n\) e \(b\in\mathbb{R}\)
+
+\paragraph{Quando eu sei que o Hiperplano Separa os Dois Conjuntos?}\hspace{0pt}\\
+
+Quando um conjunto de pontos está "acima" do hyperplano, ele pertence a um grupo, quando está "abaixo" do hyperplano, ele pertence a outro. 
+Como o conceito de "cima" e "baixo" não é tão intuitivo em \(n\) dimensões, podemos escrever matemáticamente como:
+\begin{equation}
+    \begin{cases}
+        w^Tx_i+b>0 &\text{p/ } y_i=1 \\w^Tx_i+b<0 &\text{p/ } y_i=-1
+    \end{cases}
+\end{equation}
+
 
 \subsection{Modelagem Matemática}
-Para encontrar o melhor hyperplano que divide os dados, precisamos encontrar os pesos \(w\) e viézes \(b\) de tal forma que a margem entre os hiperplanos (\(w\cdot x+b=1\)) e (\(w\cdot x+b = -1\)) seja maximizada.
 
-Isso significa maximizar \(\frac{2}{\|w\|}\) 
+ Considere um hiperplano que separe os ponto no espaço:
+\[w^Tx+b=0\]
+
+nós queremos a \textit{Margem Máxima} entre o hiperplano e os pontos perto do hiperplano, ou sejá, queremos \textit{Maximizar} a distância entre os pontos e o plano. Assim teremos que:
+
+\begin{align}
+    (w^Tx_i)+b\geq 1 &\text{ se } y_i=1 \\
+    (w^Tx_i)+b\leq -1 &\text{ se } y_i=-1
+\end{align}
+
+Queremos que a distância entre os pontos onde \(y_i=1\) e \(y_i=-1\) seja igual, portanto pegamos a distância entre(2) e (3) como:
+
+\[\frac{2}{\|w\|}= \frac{2}{\sqrt{w^Tw}}\]
+
+ou seja, podemos modelar esse problema como:
+\[\max_{w,b}\frac{2}{\|w\|}\]
+
+porém, minimizar um elemento que está no denominador pode ser problemático númericamente, portanto podemos considerar o caso \textit{Dual}, ou seja:
+\[\max_{w,b}\frac{2}{\|w\|}\equiv \min_{w,b}\frac{w^Tw}{2}\]
+
+portanto, o problema de otimização que teremos de resolver será:
+
 
 \subsection{Escolha de Algorítimo}
 
