@@ -1,1 +1,9 @@
-# _Trabalho de implementação do método Gradiente Conjugado para PNL_
+# titulo
+
+# Como rodar o projeto 
+
+# Como compilar o LaTex
+
+# Tecnologias utilizadas
+
+# Colaboradores
