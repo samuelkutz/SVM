@@ -7,20 +7,30 @@ mutable struct SVM
     kernel::AbstractString
     C::Float64
     epsilon::Float64
+    degree::Int
+    gamma::Float64
     w::Vector{Float64}
     b::Float64
 end
 
-function SVM(; max_iter=100, kernel="linear", C=1.0, epsilon=1e-3)
+function SVM(; max_iter=100, kernel="linear", C=1.0, epsilon=1e-3, degree=3, gamma=1)
     w = zeros(0)  # Initialize w as an empty vector
     b = 0.0
-    return SVM(max_iter, kernel, C, epsilon, w, b)
+    return SVM(max_iter, kernel, C, epsilon, degree, gamma, w, b)
 end
 
 function fit!(svm::SVM, X::Matrix, y::Vector)
     n, p = size(X)
     C = svm.C
+
+    for line in X
+        append!(line, 1)
+    end
+
+    println(X)
+
     Kmat = [Ker(svm, X[i, :], X[j, :]) for i = 1:n, j = 1:n]
+
 
     α = zeros(n)
 
@@ -72,6 +82,10 @@ function fit!(svm::SVM, X::Matrix, y::Vector)
         svm.b = calc_b(X, y, svm.w)
     end
 
+    if svm.kernel == "linear"
+        svm.w = calc_w(X, y, α)
+    end
+
     # Get support vectors
     alpha_idx = findall(α .> 0)  # Use α .> 0 to find support vectors
     support_vectors = X[alpha_idx, :]
@@ -109,7 +123,7 @@ function Ker(svm::SVM, xᵢ, xⱼ)
 end
 
 function calc_b(X, y, w)
-    b_tmp = y - X * w
+    b_tmp = y - X*w
     return mean(b_tmp)
 end
 
@@ -129,4 +143,8 @@ end
 
 function E(svm::SVM, x_k, y_k)
     return h(svm, x_k, svm.w, svm.b) - y_k
+end
+
+function restric_to_square(model::SVM, t, v0::Vector{Float64}, u::Vector{Float64}) 
+     
 end
