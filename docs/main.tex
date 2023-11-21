@@ -2,20 +2,36 @@
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{biblatex}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\addbibresource{bibl.bib}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Máquina de Vetores Suporte}
+\rhead{Pag. \thepage}
+\cfoot{Programação Não Linear}
+\rfoot{UFPR}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
 \title{Projeto de Programação Não Linear}
 \author{Vinicius Barcellos\\Samuel Kutz \\Marcelo Baptista \\Matheus Morishita}
 \date{}
 
 \begin{document}
-
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \begin{titlepage}
     \begin{center}
-        \vspace*{1cm}
+        \vspace*{0.5cm}
             
         \Huge
+        \HRule\\[0.4cm]
         \textbf{Projeto de Programação Não Linear}
-            
+        \HRule\\[0.4cm]
+
+        
         \vspace{0.5cm}
         \LARGE
         Support Vector Machine (SVM)
@@ -34,17 +50,24 @@
 \end{titlepage}
 
 \section{Introdução}
-No contexto de Machine Learning, modelos podem ser usados para dois tipos de problemas, \textit{Regressão} ou \textit{Classificação}. Em nosso trabalho, estaremos lidando com um modelo de Classificação, as \textbf{Máquinas de Vetores de Suporte} (SVM, do inglês \textit{Support Vector Machine}).
 
-A idéia por trás desse modelo é dividir um conjunto de dados em dois grupos que o modelo considerar distintos. 
+As \textbf{Máquinas de Vetores Suporte} (SVMs) são uma classe poderosa de algoritmos de Aprendizado de Máquina, amplamente utilizadas em tarefas de \textit{classificação} e \textit{regressão}. Originalmente desenvolvidas para problemas de classificação binária, as SVMs foram posteriormente estendidas para abordar cenários multiclasse e regressão.
 
-Vale ressaltar que esse modelo é de aprendizado não supervisionado, o que basicamente significa que o modelo vai tentar resolver o problema sózinho, e não sabemos se o que ele gerou esta certo ou não.
-
+A essência dos SVMs reside na capacidade de encontrar o \textit{hiperplano} de decisão ideal que separa distintamente as diferentes classes no espaço de características.
 
 \section{O problema}
-O meio pelo qual \textbf{SVM} tenta atingir o objetivo de classificar os dados é encontrando um \textit{Hyperplano} que vai estar entre os dados de uma forma que, dados "acima" do hyperplano pertencem a um grupo enqunato que dados "abaixo" pertencem a outro, ou seja, teremos uma resposta binária, i.e. \(y_i\in\{-1,1\}\).
 
-O problema surge do fato de que poderiamos ter infinítos hyperplanos entre os dados que poderiam dividi-los, ou seja, precisamos tentar encontrar o hyperplano ótimo, que melhor divide os dados.
+O propósito das \textbf{Máquinas de Vetores Suporte} (SVMs) é identificar um \textit{hiperplano} que consiga separar eficientemente dois grupos distintos de dados. No entanto, esta tarefa enfrenta um desafio intrínseco: a potencial existência de infinitos hiperplanos capazes de dividir os dados.
+
+Um \textit{hiperplano} ideal não apenas separa as classes, mas também maximiza a margem entre elas. A margem, neste contexto, representa a distância entre o \textit{hiperplano} e os pontos mais próximos de cada classe. Quanto maior a margem, mais eficaz é a separação dos dados, conferindo maior robustez e capacidade de generalização para dados não observados.
+
+A otimização do \textit{hiperplano} não é uma tarefa trivial. É necessário levar em consideração não apenas a separação das classes, mas também a \textit{minimização} do risco de erro de classificação. Em outras palavras, o hiperplano ótimo é aquele que \textit{equilibra} a busca pela \textit{maior} margem com a \textit{minimização} de erros.
+
+Para lidar com conjuntos de dados \textit{não linearmente separáveis}, as \textbf{SVMs} empregam funções \textit{kernel}, que realizam o mapeamento dos dados para espaços de características de dimensões mais altas. Esse procedimento amplia a capacidade das SVMs para encontrar \textit{hiperplanos} ótimos, mesmo em situações onde a separação linear seria impossível.
+
+Entretanto quando os dados são \textit{linearmente separáveis}, significa que existe um \textit{hiperplano} que pode perfeitamente separar as classes sem erros de classificação. Nesses casos, a SVM pode explorar essa propriedade e encontrar o \textit{hiperplano} ótimo sem a necessidade de transformações adicionais.
+
+O desafio central na aplicação das \textbf{SVMs} reside na escolha criteriosa do \textit{hiperplano} ótimo, considerando a \textit{maximização} da margem, a \textit{minimização} de erros e a \textit{adaptação} a conjuntos de dados complexos. A busca por essa solução ótima é a essência da eficácia e versatilidade das SVMs ao enfrentar uma variedade de desafios no campo do aprendizado de máquina.
 
 \subsection{Fundamentação Teórica}
 Support Vector Machine (\textit{SVM}) é um modelo de classificação.
@@ -72,14 +95,16 @@ Chamando \(w_0=b\) teriamos:
 \[w_1x_1+w_2x_2+\cdots+w_nx_n+b=0\]
 
 que também pode ser escrito da forma vetorial como:
-\[w^Tx+b=0\equiv <w,x>+b=0\]
+\[w^Tx+b=0\equiv (w\cdot x)+b=0\]
 
 onde \(w,x\in\mathbb{R}^n\) e \(b\in\mathbb{R}\)
+
+
 
 \paragraph{Quando eu sei que o Hiperplano Separa os Dois Conjuntos?}\hspace{0pt}\\
 
 Quando um conjunto de pontos está "acima" do hyperplano, ele pertence a um grupo, quando está "abaixo" do hyperplano, ele pertence a outro. 
-Como o conceito de "cima" e "baixo" não é tão intuitivo em \(n\) dimensões, podemos escrever matemáticamente como:
+O conceito de "cima" e "baixo" não é intuitívo em \(n\) dimensões, porém podemos generalizar esse conceito analitícamente da seguinte forma:
 \begin{equation}
     \begin{cases}
         w^Tx_i+b>0 &\text{p/ } y_i=1 \\w^Tx_i+b<0 &\text{p/ } y_i=-1
@@ -99,31 +124,240 @@ nós queremos a \textit{Margem Máxima} entre o hiperplano e os pontos perto do 
     (w^Tx_i)+b\leq -1 &\text{ se } y_i=-1
 \end{align}
 
-Queremos que a distância entre os pontos onde \(y_i=1\) e \(y_i=-1\) seja igual, portanto pegamos a distância entre(2) e (3) como:
+Queremos que a distância entre os pontos onde \(y_i=1\) e \(y_i=-1\) seja igual, portanto pegamos a distância entre (2) e (3) como:
 
 \[\frac{2}{\|w\|}= \frac{2}{\sqrt{w^Tw}}\]
 
 ou seja, podemos modelar esse problema como:
 \[\max_{w,b}\frac{2}{\|w\|}\]
 
-porém, minimizar um elemento que está no denominador pode ser problemático númericamente, portanto podemos considerar o caso \textit{Dual}, ou seja:
-\[\max_{w,b}\frac{2}{\|w\|}\equiv \min_{w,b}\frac{w^Tw}{2}\]
+porém, minimizar um elemento que está no denominador pode ser problemático númericamente, portanto podemos considerar um caso equivalente:
+\[\max_{w,b}\frac{2}{\|w\|}\equiv \min_{w,b}\frac{\|w\|^2}{2}\equiv\min_{w,b}\frac{w^Tw}{2}\]
 
 portanto, o problema de otimização que teremos de resolver será:
+\[
+\begin{aligned}
+\min_{w,b} \quad & \frac{w^Tw}{2}\\
+\textrm{s.a.} \quad & y_i((w^Tx_i)+b)\geq1,\\
+  &i=1,2,\cdots    \\
+\end{aligned}
+\]
 
+Cujo dual é dado por \cite{Evelin}:
+\[
+\begin{aligned}
+\max_{\alpha\in \mathbb{R}^l} \quad &\sum_{i=1}^{l}\alpha_i-\frac{1}{2}\sum_{i=1}^{l}\sum_{j=1}^{l}\alpha_i\alpha_j y_i y_j(x_i)^T(x_j)\\
+\textrm{s.a.} \quad & \alpha_i\geq0;i=1,\cdots,l\\
+  &y^T\alpha=0   \\
+\end{aligned}\]
+
+Vale lembrar que esse é modelo para quando assumimos que os pontos são \textit{Linearmente Separáveis}. Para o caso onde os dados não são linearmente separáveis, nosso modelo sería do tipo:
+\[
+\begin{aligned}
+\min_{w,b,\xi} \quad &\frac{1}{2}w^Tw+C\sum_{i=1}^{l}\xi_i\\
+\textrm{s.a.} \quad & y_i((w^T\phi(x_i))+b)\geq1-\xi_i,\\
+  &\xi_i\geq0;i=1,\cdots,l   \\
+\end{aligned}
+\]
+
+Onde se \(\xi_i>1\) então \(x_i\) não está do lado correto do hiperplano e \(C\) é o parâmetro de penalidade. Portanto a maioria dos \(\xi_i\) são 0.
+
+e o Dual será do tipo:
+\begin{equation}\label{eq:4} %%%%Está errado a ordem dos somatórios e os sinais estão invertidos
+\begin{aligned}
+\max_{\alpha\in \mathbb{R}^l} \quad &\sum_{i=1}^{l}\alpha_i-\frac{1}{2}\sum_{i=1}^{l}\sum_{j=1}^{l}\alpha_i\alpha_j y_i y_j\phi(x_i)^T\phi(x_j)\\
+\textrm{s.a.} \quad & 0\leq\alpha_i\leq C;i=1,\cdots,l\\
+  &\sum_{i=1}^{l}y_i\alpha_i=0. \\
+  \end{aligned}
+\end{equation}
+
+\textit{t.q.} \(K(x_i,x_j)=\phi(x_i)^T\phi(x_j)\) i.e. o \textit{Kernel}.
+
+At optimum:
+\[w = \sum_{i=1}^{l}\alpha_i y_i\phi(x_i)\]
+
+
+Onde as condições de \textbf{KKT} de (\ref{eq:4}) são satisfeitas \(\forall i\) quando\cite{platt}:
+\[\begin{aligned}\alpha_i = 0&\Rightarrow y_i (w^Tx_i+b)\geq1,\\
+0<\alpha_i<C&\Rightarrow y_i(w^Tx_i+b)=1,\\
+\alpha_i=C&\Rightarrow y_i (w^Tx_i+b)\leq1\\
+\end{aligned}\]
+
+
+\paragraph{Kernel Trick}\hspace{0pt}\\
+
+No exemplo \ref{eq:4} denotamos \(K(x_i,x_j)=\phi(x_i)^T\phi(x_j)\) como o \textit{Kernel}. Não é nescessário saber explicitamente o que \(\phi(x)\) é, já que pode ter diferentes definições dependendo do problema a ser resolvido.
+
+Porém é nescessário saber que o Kernel é uma transformação de nosso dados para caso eles não sejam \textit{Lineramente Separáveis}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{1_gXvhD4IomaC9Jb37tzDUVg.png}
+    \caption{Kernel Trick}
+    \label{fig:Kernel}
+\end{figure}
 
 \subsection{Escolha de Algorítimo}
 
+Apesar de que em vários casos de \textit{Otimização com Restrições}, algorítimos como \textit{Programação Quadrática Sequencial} (\textit{SQP}, do inglês \textit{Sequential Quadratic Programming})\cite{Ademir} são a melhor escolha, mas para o nosso caso, algorítimos que foram criados especificamente para treinar \textit{SVM} foram criados, como por exemplo, a nossa escolha de algorítimo para esse trabalho \textit{Otimização Sequencial Mínima}(\textit{SMO}, do inglês \textit{Sequntial Minimal Optimization})\cite{platt}.
+
+\paragraph{SMO} \hspace{0pt}\\
+
+O algorítimo \textit{SMO} seleciona dois parâmetros \(\alpha\): \(\alpha_i\) e \(\alpha_j\) e otimiza o valor para esses dois \(\alpha\)'s, e finalmente, ele ajusta o valor do parâmetro \(b\) baseado no valor dos novos \(\alpha\)'s. Esse precesso é repetido até que todos os \(\alpha\)'s convirjam.
+
+\paragraph{Selecionando os parâmetros \(\alpha\)} \hspace{0pt}\\
+
+Boa parte do algorítimo \textit{SVM} é dedicado a decidir os quais \(\alpha_i\) e \(\alpha_j\) a se otimizar, para ssim maximizar a função objetivo.
+
+Após escolhermos os \textit{Multiplicadores de Lagrange} \(\alpha_i\) e \(\alpha_j\), para otimizar, nós primeiro calculamos o valor desses parâmetros, então, resolvemos o problema de maximização restrita.
+
+Primeiro, queremos encontrar os limites \(L\) e \(H\) tais que \(L\leq\alpha_j\leq H\) precisa ser cumprido para que \(\alpha_j\) satisfaça a restrição \(0\leq\alpha_j\leq C\). 
+Pode-se mostrar que esse são dados por:
+\begin{equation}\label{case1}
+    y_i\neq y_j, L = \text{max}(0,\alpha_j-\alpha_i), H=\text{min}(C,C+\alpha_j-\alpha_i)
+\end{equation}
+\begin{equation}\label{case2}
+    y_i=y_j, L = \text{max}(0,\alpha_i+\alpha_j-C), H=\text{min}(C,\alpha_i+\alpha_j)
+\end{equation}
+
+Teremos que o valor de \(\alpha_j\) será dado por:
+\begin{equation}\label{eq1}
+    \alpha_j\gets\alpha_j-\frac{y_j(E_i-E_j)}{\eta}
+\end{equation}
+
+onde
+
+\begin{equation}\label{eq4}
+E_k = f(x_k)-y_k 
+\end{equation}
+\begin{equation}\label{eq3}
+    \eta = 2\langle x_i,x_j\rangle-\langle x_i,x_i\rangle-\langle x_j,x_j\rangle
+\end{equation}
+
+Pode-se pensar em \(E_k\) como o erro entre o output do SVM e o k-ésimo examplo e o valor real \(y_k\). Ao calcular o parâmetro \(\eta\) você pode usar a função Kernel K no lugar do produto interno se preciso. Após, nós limitamos \(\alpha_j\) entre o intervalo \([L,H]\)
+
+\begin{equation}\label{eq2}
+    \alpha_j \gets\begin{cases}
+    H &\text{se } \alpha_j>H\\
+    \alpha_j &\text{se } L\leq\alpha_j\leq H\\
+    L &\text{se } \alpha_j<L
+\end{cases}\end{equation}
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{image.png}
+        \caption{Interpretação Geométrica}
+        \label{fig:enter-label}
+\end{figure}
+
+
+
+finalmente, tendo resolvido para \(\alpha_j\), queremos encontrar o valor de \(\alpha_i\). Que é dado por
+
+\begin{equation}\label{alpha}\alpha_i\gets\alpha_i+y_i y_j(\alpha_{j}^{(old)}-\alpha_j)\end{equation}
+
+onde \(\alpha_{j}^{(old)}\) é o valor de \(\alpha_j\) antes da otimização por (\ref{eq1}) e (\ref{eq2}).
+
+\paragraph{Calculando o limite de b} \hspace{0pt}\\
+
+Depois de otimizar \(\alpha_i\) e \(\alpha_j\), nós selecionamos o limite \(b\) tal que as condições \textbf{KKT} sejam satisfeitas para o i-ésimo e j-ésimo exemplo. Se, depois da otimização \(\alpha_i\) não está dentro das restrições \(\text{i.e.}, 0<\alpha_i<C\), então o limite seguinte \(b_1\) é válido, já que força o output do SVM a ser \(y_i\) quando o input é \(x_i\)
+
+\begin{equation}\label{b1}b_1 = b-E_i-y_i(\alpha_i-\alpha_i^{(old)})\langle x_i,x_i\rangle-y_j(\alpha_j-\alpha_j^{(old)})\langle x_i,x_j\rangle\end{equation}
+
+Similarmente, o limite seguinte \(b_2\) é válido se \(o<\alpha_j<C\)
+\begin{equation}\label{b2}b_2 = b-E_j-y_i(\alpha_i-\alpha_i^{(old)})\langle x_i,x_j\rangle-y_j(\alpha_j-\alpha_j^{(old)})\langle x_j,x_j\rangle\end{equation}
+
+Se ambos \(0<\alpha_i<C\) e \(0<\alpha_j<C\), então ambos os limites são válidos, e então eles serão iguais.
+Se ambos os novos \(\alpha\)'s estão nos limites (i.e.,\(\alpha_i=0\) e \(\alpha_i=C\) ou \(\alpha_j=C\)) então os limites entre \(b_1\) e \(b_2\) satisfazem as condições de \textbf{KKT}, nós fazemos \(b\gets\frac{b_1+b_2}{2}\). Isso nos dá a equação completa para \(b\):
+
+\begin{equation}\label{b}
+b\gets\begin{cases}b_1 &\text{se  }0<\alpha_i<C\\
+b_2 &\text{se  }0<\alpha_j<C\\
+\frac{b_1+b_2}{2} &\text{caso contrário}
+\end{cases}
+\end{equation}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
 \section{Experimentos Numéricos}
+
+Nesta seção, apresentaremos os resultados obtidos na resolução do problema proposto. Os testes numéricos foram implementados em Julia em um computador Dell Latitude 7400 com 8 GB de RAM e processador de 1,9 GHz. Os códigos estão disponíveis no GitHub em https://github.com/samuelkutz/svm-smo.
+
 \subsection{O algorítimo Implementado}
+\textbf{Pseudo código de SMO}
+Aqui está o pseudo-código de SMO que implementamos no nosso algoritmo:
+
+\begin{algorithm}[H]
+\caption{SMO simplificado}\label{euclid}
+\begin{algorithmic}[1]
+\State \textbf{Input: }
+\State \textit{C: Parâmetro de regularização}
+\State \textit{tol: Tolerância numérica}
+\State \textit{maxpasses: número de iterações máximas sem mudar}
+\State $(x_1,y_1),\cdots,(x_m,y_m): \textit{Dados de Treinamento}$
+\State
+\State \textbf{Output: }
+\State $\alpha\in\mathbb{R}^m:\textit{Multiplicadores de Lagrange para solução}$
+\State $ b\in\mathbb{R}: \textit{limite para solução}$
+\State
+\Procedure{SMO:}{}
+\State $ \alpha_i\gets0,\forall i,b\gets0$
+\State $\textit{passes}\gets0$
+\While{$\textit{(passes}<\textit{maxpasses)}$}:
+    \State $\textit{numChangedAlphas}\gets 0$
+    \For{$i=1,\cdots,m,$}
+        \State $E_i\gets f(x_i)-y_i$
+        \If{$((y_iE_i<-\textit{tol} \textit{e } \alpha_i<C)\| (y_iE_i>\textit{tol e }\alpha_i>0))$}
+            \State $\textit{Selecione } j\neq i \textit{ Aleatóriamente}$
+            \State $\textit{Calcule } E_j\gets f(x_j)-y_j$
+            \State $\alpha_{i}^{(old)}\gets\alpha_i$
+            \State $\alpha_{j}^{(old)}\gets\alpha_j$
+            \State $\textit{Calcule }L\textit{ e H por (\ref{case1}) e (\ref{case2})}$
+            \If{$L==H$}
+                \State $\textbf{Continue }\textit{para o próximo }i$
+            \EndIf
+            \State $\textit{Compute } \eta \textit{ por (\ref{eq3})}$
+            \If{$(|\alpha_j-\alpha_j^{(old)}|<10^{-5})$}
+                \State $\textbf{Continue }\textit{para o próximo }i$
+            \EndIf
+            \State $\textit{Determine o valor para }\alpha_i\textit{ usando (\ref{alpha})}$
+            \State $\textit{Compute }b_1 \textit{e }b_2\textit{ usando (\ref{b1}) e (\ref{b2})}$
+            \State$\textit{Compute }b\textit{ usando (\ref{b})}$
+            \State $\textit{numChangedAlfas}\gets\textit{numChangedAlfas}+1$
+        \EndIf
+    \EndFor
+    \If{numChangedAlfas ==0}
+        \State $\textit{passes}\gets\textit{passes}+1$
+    \EndIf
+    \State\textbf{else}
+        \State$\textit{passes }\gets0$
+\EndWhile
+\State\textbf{EndWhile}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Resultados Obtidos}
 
+\textbf{Limitações da experimentação}
+
+A experimentação foi realizada utilizando apenas conjuntos de dados artificiais. Portanto, os resultados não podem ser generalizados para outros conjuntos de dados.
+
+Para obter resultados mais robustos, a experimentação deve ser realizada utilizando uma variedade de conjuntos de dados. Além disso apenas implementamos apenas três kernal no algoritmo, Linear, RBF, Quadrática 
+
 \section{Conclusões}
-%\begin{equation}
-%\begin{aligned}
-%\min_{w,b,\xi} \quad & \frac{1}{2}w^{t}w+C\sum_{i=1}^{N}{\xi_{i}}\\
-%\textrm{s.t.} \quad & y_{i}(w\phi(x_{i}+b))+\xi_{i}-1\\
-%  &\xi\geq0    \\
-%\end{aligned}
-%\end{equation}
+
+Os resultados da experimentação sugerem que a escolha da abordagem de otimização pode ter um impacto significativo na performance de SVMs. No entanto, a abordagem ideal depende de fatores como o tempo de treinamento disponível e o desempenho de classificação desejado.
+
+\printbibliography
+%----------------------To-do-Later--------------------------------------
+%
+%    \begin{figure}[H]
+%         \centering
+%         \includegraphics[width=0.8\textwidth]{image.png}
+%         \caption{SMO}
+%         \label{SMO_reta}
+%     \end{figure}
 \end{document}
