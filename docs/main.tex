@@ -11,7 +11,8 @@
 \pagestyle{fancy}
 \lhead{Máquina de Vetores Suporte}
 \rhead{Pag. \thepage}
-\cfoot{UFPR}
+\cfoot{Programação Não Linear}
+\rfoot{UFPR}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
@@ -50,13 +51,13 @@
 
 \section{Introdução}
 
-As \textbf{Máquinas de Vetores de Suporte} (SVMs) são uma classe poderosa de algoritmos de Aprendizado de Máquina, amplamente utilizadas em tarefas de \textit{classificação} e \textit{regressão}. Originalmente desenvolvidas para problemas de classificação binária, as SVMs foram posteriormente estendidas para abordar cenários multiclasse e regressão.
+As \textbf{Máquinas de Vetores Suporte} (SVMs) são uma classe poderosa de algoritmos de Aprendizado de Máquina, amplamente utilizadas em tarefas de \textit{classificação} e \textit{regressão}. Originalmente desenvolvidas para problemas de classificação binária, as SVMs foram posteriormente estendidas para abordar cenários multiclasse e regressão.
 
 A essência dos SVMs reside na capacidade de encontrar o \textit{hiperplano} de decisão ideal que separa distintamente as diferentes classes no espaço de características.
 
 \section{O problema}
 
-O propósito das \textbf{Máquinas de Vetores de Suporte} (SVMs) é identificar um \textit{hiperplano} que consiga separar eficientemente dois grupos distintos de dados. No entanto, esta tarefa enfrenta um desafio intrínseco: a potencial existência de infinitos hiperplanos capazes de dividir os dados.
+O propósito das \textbf{Máquinas de Vetores Suporte} (SVMs) é identificar um \textit{hiperplano} que consiga separar eficientemente dois grupos distintos de dados. No entanto, esta tarefa enfrenta um desafio intrínseco: a potencial existência de infinitos hiperplanos capazes de dividir os dados.
 
 Um \textit{hiperplano} ideal não apenas separa as classes, mas também maximiza a margem entre elas. A margem, neste contexto, representa a distância entre o \textit{hiperplano} e os pontos mais próximos de cada classe. Quanto maior a margem, mais eficaz é a separação dos dados, conferindo maior robustez e capacidade de generalização para dados não observados.
 
@@ -103,7 +104,7 @@ onde \(w,x\in\mathbb{R}^n\) e \(b\in\mathbb{R}\)
 \paragraph{Quando eu sei que o Hiperplano Separa os Dois Conjuntos?}\hspace{0pt}\\
 
 Quando um conjunto de pontos está "acima" do hyperplano, ele pertence a um grupo, quando está "abaixo" do hyperplano, ele pertence a outro. 
-Como o conceito de "cima" e "baixo" não é tão intuitivo em \(n\) dimensões, podemos escrever matemáticamente como:
+O conceito de "cima" e "baixo" não é intuitívo em \(n\) dimensões, porém podemos generalizar esse conceito analitícamente da seguinte forma:
 \begin{equation}
     \begin{cases}
         w^Tx_i+b>0 &\text{p/ } y_i=1 \\w^Tx_i+b<0 &\text{p/ } y_i=-1
@@ -123,7 +124,7 @@ nós queremos a \textit{Margem Máxima} entre o hiperplano e os pontos perto do 
     (w^Tx_i)+b\leq -1 &\text{ se } y_i=-1
 \end{align}
 
-Queremos que a distância entre os pontos onde \(y_i=1\) e \(y_i=-1\) seja igual, portanto pegamos a distância entre(2) e (3) como:
+Queremos que a distância entre os pontos onde \(y_i=1\) e \(y_i=-1\) seja igual, portanto pegamos a distância entre (2) e (3) como:
 
 \[\frac{2}{\|w\|}= \frac{2}{\sqrt{w^Tw}}\]
 
@@ -188,9 +189,17 @@ Onde as condições de \textbf{KKT} de (\ref{eq:4}) são satisfeitas \(\forall i
 No exemplo \ref{eq:4} denotamos \(K(x_i,x_j)=\phi(x_i)^T\phi(x_j)\) como o \textit{Kernel}. Não é nescessário saber explicitamente o que \(\phi(x)\) é, já que pode ter diferentes definições dependendo do problema a ser resolvido.
 
 Porém é nescessário saber que o Kernel é uma transformação de nosso dados para caso eles não sejam \textit{Lineramente Separáveis}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{1_gXvhD4IomaC9Jb37tzDUVg.png}
+    \caption{Kernel Trick}
+    \label{fig:Kernel}
+\end{figure}
+
 \subsection{Escolha de Algorítimo}
 
-Apesar de que em vários casos de \textit{Otimização com Restrições}, algorítimos como \textit{Programação Quadrática Sequencial} (\textit{SQR}, do inglês \textit{Sequential Quadratic Programming})\cite{Ademir} são a melhor escolha, mas para o nosso caso, algorítimos que foram criados especificamente para treinar \textit{SVM} foram criados, como por exemplo, a nossa escolha de algorítimo para esse trabalho \textit{Otimização Sequencial Mínima}(\textit{SMO}, do inglês \textit{Sequntial Minimal Optimization})\cite{platt}.
+Apesar de que em vários casos de \textit{Otimização com Restrições}, algorítimos como \textit{Programação Quadrática Sequencial} (\textit{SQP}, do inglês \textit{Sequential Quadratic Programming})\cite{Ademir} são a melhor escolha, mas para o nosso caso, algorítimos que foram criados especificamente para treinar \textit{SVM} foram criados, como por exemplo, a nossa escolha de algorítimo para esse trabalho \textit{Otimização Sequencial Mínima}(\textit{SMO}, do inglês \textit{Sequntial Minimal Optimization})\cite{platt}.
 
 \paragraph{SMO} \hspace{0pt}\\
 
@@ -213,7 +222,7 @@ Pode-se mostrar que esse são dados por:
 
 Teremos que o valor de \(\alpha_j\) será dado por:
 \begin{equation}\label{eq1}
-    \alpha_j:=\alpha_j-\frac{y_j(E_i-E_j)}{\eta}
+    \alpha_j\gets\alpha_j-\frac{y_j(E_i-E_j)}{\eta}
 \end{equation}
 
 onde
@@ -228,23 +237,30 @@ E_k = f(x_k)-y_k
 Pode-se pensar em \(E_k\) como o erro entre o output do SVM e o k-ésimo examplo e o valor real \(y_k\). Ao calcular o parâmetro \(\eta\) você pode usar a função Kernel K no lugar do produto interno se preciso. Após, nós limitamos \(\alpha_j\) entre o intervalo \([L,H]\)
 
 \begin{equation}\label{eq2}
-    \alpha_j :=\begin{cases}
+    \alpha_j \gets\begin{cases}
     H &\text{se } \alpha_j>H\\
     \alpha_j &\text{se } L\leq\alpha_j\leq H\\
     L &\text{se } \alpha_j<L
 \end{cases}\end{equation}
 
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{image.png}
+        \caption{Interpretação Geométrica}
+        \label{fig:enter-label}
+\end{figure}
+
 
 
 finalmente, tendo resolvido para \(\alpha_j\), queremos encontrar o valor de \(\alpha_i\). Que é dado por
 
-\[\alpha_i:=\alpha_i+y_i y_j(\alpha_{j}^{(old)}-\alpha_j)\]
+\begin{equation}\label{alpha}\alpha_i\gets\alpha_i+y_i y_j(\alpha_{j}^{(old)}-\alpha_j)\end{equation}
 
 onde \(\alpha_{j}^{(old)}\) é o valor de \(\alpha_j\) antes da otimização por (\ref{eq1}) e (\ref{eq2}).
 
 \paragraph{Calculando o limite de b} \hspace{0pt}\\
 
-Depois de otimizar \(\alpha_i\) e \(\alpha_j\), nós selecionamos o limite \(b\) tal que as condições \textbf{KKT} sejam satisfeitas for o i-ésimo e j-ésimo exemplo. Se, depois da otimização \(\alpha_i\) não está dentro das restrições \(\text{i.e.}, 0<\alpha_i<C\), então o limite seguinte \(b_1\) é válido, já que força o output do SVM a ser \(y_i\) quando o input é \(x_i\)
+Depois de otimizar \(\alpha_i\) e \(\alpha_j\), nós selecionamos o limite \(b\) tal que as condições \textbf{KKT} sejam satisfeitas para o i-ésimo e j-ésimo exemplo. Se, depois da otimização \(\alpha_i\) não está dentro das restrições \(\text{i.e.}, 0<\alpha_i<C\), então o limite seguinte \(b_1\) é válido, já que força o output do SVM a ser \(y_i\) quando o input é \(x_i\)
 
 \begin{equation}\label{b1}b_1 = b-E_i-y_i(\alpha_i-\alpha_i^{(old)})\langle x_i,x_i\rangle-y_j(\alpha_j-\alpha_j^{(old)})\langle x_i,x_j\rangle\end{equation}
 
@@ -252,10 +268,10 @@ Similarmente, o limite seguinte \(b_2\) é válido se \(o<\alpha_j<C\)
 \begin{equation}\label{b2}b_2 = b-E_j-y_i(\alpha_i-\alpha_i^{(old)})\langle x_i,x_j\rangle-y_j(\alpha_j-\alpha_j^{(old)})\langle x_j,x_j\rangle\end{equation}
 
 Se ambos \(0<\alpha_i<C\) e \(0<\alpha_j<C\), então ambos os limites são válidos, e então eles serão iguais.
-Se ambos os novos \(\alpha\)'s estão nos limites (i.e.,\(\alpha_i=0\) e \(\alpha_i=C\) ou \(\alpha_j=C\)) então os limites entre \(b_1\) e \(b_2\) satisfazem as condições de \textbf{KKT}, nós fazemos \(b:=\frac{b_1+b_2}{2}\). Isso nos dá a equação completa para \(b\):
+Se ambos os novos \(\alpha\)'s estão nos limites (i.e.,\(\alpha_i=0\) e \(\alpha_i=C\) ou \(\alpha_j=C\)) então os limites entre \(b_1\) e \(b_2\) satisfazem as condições de \textbf{KKT}, nós fazemos \(b\gets\frac{b_1+b_2}{2}\). Isso nos dá a equação completa para \(b\):
 
 \begin{equation}\label{b}
-b:=\begin{cases}b_1 &\text{se  }0<\alpha_i<C\\
+b\gets\begin{cases}b_1 &\text{se  }0<\alpha_i<C\\
 b_2 &\text{se  }0<\alpha_j<C\\
 \frac{b_1+b_2}{2} &\text{caso contrário}
 \end{cases}
@@ -264,6 +280,14 @@ b_2 &\text{se  }0<\alpha_j<C\\
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
+
+\section{Experimentos Numéricos}
+
+Nesta seção, apresentaremos os resultados obtidos na resolução do problema proposto. Os testes numéricos foram implementados em Julia em um computador Dell Latitude 7400 com 8 GB de RAM e processador de 1,9 GHz. Os códigos estão disponíveis no GitHub em https://github.com/samuelkutz/svm-smo.
+
+\subsection{O algorítimo Implementado}
+\textbf{Pseudo código de SMO}
+Aqui está o pseudo-código de SMO que implementamos no nosso algoritmo:
 
 \begin{algorithm}[H]
 \caption{SMO simplificado}\label{euclid}
@@ -298,7 +322,7 @@ b_2 &\text{se  }0<\alpha_j<C\\
             \If{$(|\alpha_j-\alpha_j^{(old)}|<10^{-5})$}
                 \State $\textbf{Continue }\textit{para o próximo }i$
             \EndIf
-            \State $\textit{Determine o valor para }\alpha_i\textit{ usando}$
+            \State $\textit{Determine o valor para }\alpha_i\textit{ usando (\ref{alpha})}$
             \State $\textit{Compute }b_1 \textit{e }b_2\textit{ usando (\ref{b1}) e (\ref{b2})}$
             \State$\textit{Compute }b\textit{ usando (\ref{b})}$
             \State $\textit{numChangedAlfas}\gets\textit{numChangedAlfas}+1$
@@ -315,12 +339,25 @@ b_2 &\text{se  }0<\alpha_j<C\\
 \end{algorithmic}
 \end{algorithm}
 
-
-\section{Experimentos Numéricos}
-\subsection{O algorítimo Implementado}
 \subsection{Resultados Obtidos}
+
+\textbf{Limitações da experimentação}
+
+A experimentação foi realizada utilizando apenas conjuntos de dados artificiais. Portanto, os resultados não podem ser generalizados para outros conjuntos de dados.
+
+Para obter resultados mais robustos, a experimentação deve ser realizada utilizando uma variedade de conjuntos de dados. Além disso apenas implementamos apenas três kernal no algoritmo, Linear, RBF, Quadrática 
 
 \section{Conclusões}
 
+Os resultados da experimentação sugerem que a escolha da abordagem de otimização pode ter um impacto significativo na performance de SVMs. No entanto, a abordagem ideal depende de fatores como o tempo de treinamento disponível e o desempenho de classificação desejado.
+
 \printbibliography
+%----------------------To-do-Later--------------------------------------
+%
+%    \begin{figure}[H]
+%         \centering
+%         \includegraphics[width=0.8\textwidth]{image.png}
+%         \caption{SMO}
+%         \label{SMO_reta}
+%     \end{figure}
 \end{document}
