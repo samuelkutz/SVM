@@ -80,7 +80,7 @@ function fit!(svm::SVM, X::Matrix, y::Vector)
 end
 
 function predict(svm::SVM, X)
-    return h(svm, X, svm.w, svm.b)
+    return h(svm, X)
 end
 
 # Generate j that's different from i
@@ -108,9 +108,16 @@ function Ker(svm::SVM, xᵢ, xⱼ)
     end
 end
 
+function h(svm::SVM, X)
+    return sign(dot(svm.w, X) + svm.b)
+end
+
+function E(svm::SVM, xₖ, yₖ)
+    return h(svm, xₖ) - yₖ
+end
+
 function calc_b(X, y, w)
-    b_tmp = y - X * w
-    return mean(b_tmp)
+    return mean(y - X * w)
 end
 
 function calc_w(X, y, α)
@@ -121,12 +128,4 @@ function calc_w(X, y, α)
     end
 
     return result
-end
-
-function h(svm::SVM, X, w, b)
-    return sign(dot(w, X) + b)
-end
-
-function E(svm::SVM, x_k, y_k)
-    return h(svm, x_k, svm.w, svm.b) - y_k
 end
