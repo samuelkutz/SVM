@@ -1,45 +1,72 @@
-# SVM-SMO
+# SVM (Support Vector Machine) in Julia
 
-This project implements the Sequential Minimal Optimization (SMO) algorithm for training Support Vector Machines (SVM) in Julia.
+This Julia package provides a simple implementation of a Support Vector Machine (SVM) for classification tasks. The SVM is a supervised machine learning model that can be used for both linear and non-linear classification.
+
+##### _We are working in turning this project into a package_
 
 ## Installation
 
-To install SVM-SMO, clone the repository and run the following command:
+You can simply clone the files using git clone:
 
 ```
-julia
+git clone https://github.com/samuelkutz/svm-smo/
 ```
 
-Then, navigate to the project directory and run the following command:
 
+Once downloaded, you can simply include it in your julia code
+
+```julia
+include("your-path-to-clone/to/clone/src/svm.jl")
 ```
-include("svm-smo.jl")
-```
+
+Now you're ready to create and train Support Vector Machine models for your classification tasks!
 
 ## Usage
 
-To train an SVM using the SMO algorithm, run the following command:
+```julia
+# Import the SVM module
+include("your-path-to-clone/src/svm.jl")
 
+# Create an SVM model with default parameters or your own
+svm_model = SVM() 
+
+# Load your training data (X) and labels (y)
+X_train = ...
+y_train = ...
+
+# Fit the SVM model to the training data
+fit!(svm_model, X_train, y_train)
+
+# Make predictions on new data
+x_new = ...
+prediction = predict(svm_model, x_new)
 ```
-train_svm(data, C, kernel, degree, gamma)
-```
 
-where:
+## SVM Parameters
 
-* `data` is a matrix of training data
-* `C` is the regularization parameter
-* `kernel` is the type of kernel function (e.g., "linear", "polynomial", or "rbf")
-* `degree` is the degree of the polynomial kernel (only used if kernel is "polynomial")
-* `gamma` is the gamma parameter of the RBF kernel (only used if kernel is "rbf")
+The SVM model is defined with the following parameters:
 
-## Output
+- `C`: Regularization parameter (default: 1.0)
+- `tol`: Tolerance for stopping criterion (default: 1e-3)
+- `kernel_type`: Type of kernel function to be used. Currently supports only the linear kernel.
+- `gamma`: Kernel coefficient for 'rbf' and 'poly' kernels (default: 0.5)
+- `degree`: Degree of the polynomial kernel function ('poly') (default: 3.0)
+- `coef0`: Independent term in the kernel function ('poly' and 'sigmoid') (default: 0.0)
 
-The `train_svm` function will return a `svm_model` object, which contains the following information:
+## SVM Methods
 
-* `support_vectors`: The training examples that are closest to the decision boundary
-* `dual_coefficients`: The coefficients of the support vectors in the dual representation of the SVM
-* `bias`: The bias of the SVM
+### `fit!(svm::SVM, X::Matrix{Float64}, y::Vector{Float64})`
 
-## License
+Fit the SVM model to the provided training data.
 
-This project is licensed under the MIT License.
+### `predict(svm::SVM, x_new::Vector{Float64})`
+
+Make predictions on new data using the trained SVM model.
+
+## Kernel Functions
+
+The package currently supports only the linear kernel. Additional kernel functions such as 'rbf', 'poly', and 'sigmoid' will be implemented in future releases.
+
+## Contributions
+
+Contributions and bug reports are welcome! Feel free to contact us in case of any doubts.
