@@ -24,6 +24,8 @@ mutable struct SMO
     E2::Float64
 end
 
+
+# TODO: Kernel CHACHE
 function SMO(X::Matrix{Float64}, y::Vector{Float64}, C::Float64, tol::Float64, kernel::Function, use_linear_optim::Bool)
     m, n = size(X)
     
