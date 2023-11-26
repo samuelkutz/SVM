@@ -10,7 +10,7 @@ y = [X[i, 1]^2 + X[i, 2]^2 > 2  ? 1.0 : -1.0 for i = 1:n]
 
 # we need to create a new dimension for X
 
-𝜙(x) = [x[1] x[2] (x[1]^2 + x[2]^2)]
+𝜙(x) = [[1x] x[2] (x[1]^2 + x[2]^2)]
 
 𝜙X = zeros(n, 3)
 
@@ -19,15 +19,19 @@ for i in 1:n
     𝜙X[i, :] = 𝜙(x)
 end
 
-model = SVM(C=100.0)
+model = SVM(C=10.0)
 
 fit!(model, 𝜙X, y)
 
 gr()
 plot(leg=false)
 
+I = findall(0 .< model.alphas .< model.C)
+scatter!(X[I,1],X[I,2], c=:pink, m=(:white, stroke(1, :black), 10))
+
 I = findall(y.==1)
 scatter!(X[I,1], X[I,2], c=:blue, m=:square)
+
 I = findall(y.==-1)
 scatter!(X[I,1], X[I,2], c=:red, m=:circle)
 
@@ -43,5 +47,5 @@ contour!(x1g, x2g, (x1, x2) -> dot(model.w, 𝜙([x1; x2])) + model.b, levels=25
 xlims!(extrema(X[:, 1])...)
 ylims!(extrema(X[:, 2])...)
 
-fig_path = "docs/images/non-linear-non-separable.png"
+fig_path = "docs/images/non-linear-separable.png"
 savefig(fig_path)

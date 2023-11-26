@@ -121,9 +121,14 @@ function take_step(smo::SMO, i1, i2)
     else
         # if not linear. This need to be revised
 
+
+        # OBS: THE FOLLOWING FOR LOOP IS IMPROVISED AND IS NOT CERTAIN THAT THIS WORKS
+
         smo.w .= 0.0  
 
         for i in 1:smo.m
+            # TODO: MAKE THE ACUMULATION NOT BASED ON SIMPLE X, IT SHOULD BE BASED ON ALL 𝝓(X) INSTEAD
+
             smo.w .+= smo.alphas[i] * smo.y[i] * smo.X[i, :]  # Accumulate based on Lagrange multipliers
         end
     end

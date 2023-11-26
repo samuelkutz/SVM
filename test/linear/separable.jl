@@ -11,13 +11,13 @@ b = -0.5
 y = [dot(w, X[i, :]) + b > 0 ? 1.0 : -1.0 for i = 1:n]
 
 # set C sufficiently high for the model to find the right hyperplane
-model = SVM(C=10.0, kernel_type=:linear)
+model = SVM(C=1.0, kernel_type=:linear)
 
 fit!(model, X, y)
 
 plot(leg=false)
 
-I = findall(1e-4.< model.alphas .< model.C - 1e-4)
+I = findall(1e-4.< model.alphas .< model.C - 1e-4) 
 scatter!(X[I,1],X[I,2], c=:pink, m=(:white, stroke(1, :pink), 10))
 
 I = findall(y.==1)

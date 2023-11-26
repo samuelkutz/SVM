@@ -27,7 +27,7 @@ end
 
 # TODO: parameters validation
 function SVM(; C::Float64=1.0, tol::Float64=1e-3, kernel_type::Symbol=:linear, gamma::Float64=0.5, degree::Float64=3.0, coef0::Float64=0.0)
-    use_linear_optim=false
+    use_linear_optim=true
     
     X = Matrix{Float64}(undef, 0, 0)
     y = Vector{Float64}(undef, 0)
@@ -42,14 +42,13 @@ function SVM(; C::Float64=1.0, tol::Float64=1e-3, kernel_type::Symbol=:linear, g
     w = zeros(m)
 
     if kernel_type == :linear
-        use_linear_optim=true
         kernel = (x1::Vector{Float64}, x2::Vector{Float64}) -> dot(x1, x2)
-    elseif kernel_type == :rbf
-        kernel = (x1::Vector{Float64}, x2::Vector{Float64}) -> exp(-gamma * norm(x1 - x2)^2)
-    elseif kernel_type == :poly
-        kernel = (x1::Vector{Float64}, x2::Vector{Float64}) -> (coef0 + dot(x1, x2) ^ degree)
-    elseif kernel_type == :sigmoid
-        kernel = (x1::Vector{Float64}, x2::Vector{Float64}) -> tanh(coef0 + gamma * dot(x1, x2))
+    # elseif kernel_type == :rbf
+    #     kernel = (x1::Vector{Float64}, x2::Vector{Float64}) -> exp(-gamma * norm(x1 - x2)^2)
+    # elseif kernel_type == :poly
+    #     kernel = (x1::Vector{Float64}, x2::Vector{Float64}) -> (coef0 + dot(x1, x2) ^ degree)
+    # elseif kernel_type == :sigmoid
+    #     kernel = (x1::Vector{Float64}, x2::Vector{Float64}) -> tanh(coef0 + gamma * dot(x1, x2))
     else
         error("Unsupported kernel type: $kernel_type")
     end
