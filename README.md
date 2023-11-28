@@ -16,7 +16,7 @@ git clone https://github.com/samuelkutz/svm-smo/
 Once downloaded, you can simply include it in your julia code
 
 ```julia
-include("your-path-to-clone/to/clone/src/svm.jl")
+include("path/to/clone/src/svm.jl")
 ```
 
 Now you're ready to create and train Support Vector Machine models for your classification tasks!
