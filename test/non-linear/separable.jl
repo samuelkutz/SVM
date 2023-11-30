@@ -10,7 +10,7 @@ y = [X[i, 1]^2 + X[i, 2]^2 > 2  ? 1.0 : -1.0 for i = 1:n]
 
 # we need to create a new dimension for X
 
-𝜙(x) = [[1x] x[2] (x[1]^2 + x[2]^2)]
+𝜙(x) = [x[1] x[2] (x[1]^2 + x[2]^2)]
 
 𝜙X = zeros(n, 3)
 
