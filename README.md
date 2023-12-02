@@ -1,6 +1,6 @@
 # SVM (Support Vector Machine) in Julia
 
-This Julia package provides a simple implementation of a Support Vector Machine (SVM) for classification tasks. The SVM is a supervised machine learning model that can be used for both linear and non-linear classification.
+This Julia project provides a simple implementation of a Support Vector Machine (SVM) for classification tasks. The SVM is a supervised machine learning model that can be used for both linear and non-linear classification.
 
 ##### _We are working in turning this project into a package_
 
