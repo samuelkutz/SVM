@@ -57,13 +57,15 @@ The SVM model is defined with the following parameters:
 
 ## SVM Methods
 
-### `fit!(svm::SVM, X::Matrix{Float64}, y::Vector{Float64})`
+```julia
+fit!(svm::SVM, X::Matrix{Float64}, y::Vector{Float64})
+```
+_Fit the SVM model to the provided training data._
 
-Fit the SVM model to the provided training data.
-
-### `predict(svm::SVM, x_new::Vector{Float64})`
-
-Make predictions on new data using the trained SVM model.
+```julia
+predict(svm::SVM, x_new::Vector{Float64})
+```
+_Make predictions on new data using the trained SVM model._
 
 ## Kernel Functions
 
