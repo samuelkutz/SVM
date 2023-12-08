@@ -4,7 +4,7 @@ This project aims to provide a simple implementation of a Support Vector Machine
 
 The main point of this whole work is to implement the original [Sequential Minimal Opimization](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-98-14.pdf) algorithm based on the pseudocode from John Platt.
 
-##### _We are planning in turning this project into a package_
+##### _We are planning in turning this project into a package just for the fun of it_
 
 ## Installation
 
