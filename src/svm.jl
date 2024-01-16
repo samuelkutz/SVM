@@ -1,10 +1,10 @@
-export SVM
+module SVM
 
-include("../src/smo.jl")
+include("../src/SMO.jl")
 
 using LinearAlgebra
 
-mutable struct SVM
+mutable struct SVC
     X::Matrix
     y::Vector
 
@@ -26,7 +26,7 @@ mutable struct SVM
 end
 
 # TODO: parameters validation
-function SVM(; C::Float64=1.0, tol::Float64=1e-3, kernel_type::Symbol=:linear, gamma::Float64=0.5, degree::Float64=3.0, coef0::Float64=0.0)
+function SVC(; C::Float64=1.0, tol::Float64=1e-3, kernel_type::Symbol=:linear, gamma::Float64=0.5, degree::Float64=3.0, coef0::Float64=0.0)
     use_linear_optim=true
     
     X = Matrix{Float64}(undef, 0, 0)
@@ -53,31 +53,35 @@ function SVM(; C::Float64=1.0, tol::Float64=1e-3, kernel_type::Symbol=:linear, g
         error("Unsupported kernel type: $kernel_type")
     end
 
-    return SVM(X, y, C, tol, kernel, use_linear_optim, gamma, degree, coef0, errors, eps, alphas, w, b)
+    return SVC(X, y, C, tol, kernel, use_linear_optim, gamma, degree, coef0, errors, eps, alphas, w, b)
 end
 
-function fit!(svm::SVM, X::Matrix{Float64}, y::Vector{Float64})
-    svm.X = X
-    svm.y = y
+function fit!(SVC::SVC, X::Matrix{Float64}, y::Vector{Float64})
+    SVC.X = X
+    SVC.y = y
     m = size(X, 1)
-    svm.alphas = zeros(m)
-    svm.errors = zeros(m)
+    SVC.alphas = zeros(m)
+    SVC.errors = zeros(m)
 
-    smo = SMO(X, y, svm.C, svm.tol, svm.kernel, svm.use_linear_optim)
+    smo = SMO(X, y, SVC.C, SVC.tol, SVC.kernel, SVC.use_linear_optim)
 
     optimize(smo)
 
-    # Update SVM parameters based on the SMO results
-    svm.alphas = smo.alphas
-    svm.errors = smo.Es
-    svm.w = smo.w
-    svm.b = smo.b
+    # Update SVC parameters based on the SMO results
+    SVC.alphas = smo.alphas
+    SVC.errors = smo.Es
+    SVC.w = smo.w
+    SVC.b = smo.b
 end
 
-function predict(svm::SVM, x_new::Vector{Float64})
-    if svm.use_linear_optim
-        return dot(svm.w, x_new) - svm.b
+function predict(SVC::SVC, x_new::Vector{Float64})
+    if SVC.use_linear_optim
+        return dot(SVC.w, x_new) - SVC.b
     else
-        return sum(svm.alphas[j] * svm.y[j] * svm.kernel(svm.X[:, j], x_new) for j in 1:svm.m) - svm.b
+        return sum(SVC.alphas[j] * SVC.y[j] * SVC.kernel(SVC.X[:, j], x_new) for j in 1:SVC.m) - SVC.b
     end
 end
+
+export SVC, fit!, predict
+
+end # SVM
